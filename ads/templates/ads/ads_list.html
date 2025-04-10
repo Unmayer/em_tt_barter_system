@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Список объявлений{% endblock %}
+
+{% block content %}
+    <h1>Список объявлений</h1>
+    
+    {% for ad in ads %}
+    <div class="ad">
+        <div class="ad-header">{{ ad.title }}</div>
+        <div class="ad-meta">
+            <span class="meta-item">Автор: {{ ad.author.username }}</span>
+            <span class="meta-item">Дата: {{ ad.created_at|date:"d.m.Y" }}</span>
+            <span class="meta-item">Состояние: {{ ad.get_condition_display }}</span>
+        </div>
+        <div class="ad-actions">
+            <a href="{% url 'edit_ad' ad.pk %}" class="action-link edit-link">Редактировать</a>
+            <form method="post" action="{% url 'delete_ad' ad.pk %}" class="action-form">
+                {% csrf_token %}
+                <button type="submit" class="action-link delete-btn">
+                    Удалить
+                </button>
+            </form>
+        </div>
+    </div>
+    {% empty %}
+    <div class="empty-message">Нет объявлений</div>
+    {% endfor %}
+{% endblock content %}

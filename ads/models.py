@@ -3,7 +3,7 @@ from django.db import models
 
 
 class CreatedDateMixin(models.Model):
-    created = models.DateTimeField(auto_now_add=True, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата публикации')
 
     class Meta:
         abstract = True

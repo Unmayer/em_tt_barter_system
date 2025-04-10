@@ -1,0 +1,105 @@
+.confirmation-container {
+        max-width: 600px;
+        margin: 30px auto;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+    }
+    .ad-details {
+        margin: 20px 0;
+        padding: 15px;
+        background-color: white;
+        border-radius: 5px;
+    }
+    .ad-details p {
+        margin: 10px 0;
+    }
+
+    .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    line-height: 1.5;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+}
+
+.ad {
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fff;
+}
+
+.ad-header {
+    margin-bottom: 8px;
+    font-weight: bold;
+    font-size: 1.1em;
+    color: #2c3e50;
+}
+
+.ad-meta {
+    color: #666;
+    font-size: 0.9em;
+    margin-bottom: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.meta-item {
+    white-space: nowrap;
+}
+
+.ad-actions {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+}
+
+.action-link {
+    text-decoration: none;
+    font-size: 0.9em;
+    padding: 4px 8px;
+    border-radius: 3px;
+}
+
+.edit-link {
+    color: #065fd4;
+    border: 1px solid #065fd4;
+}
+
+.edit-link:hover {
+    background-color: #e8f0fe;
+}
+
+.delete-btn {
+    background: none;
+    border: 1px solid #d33434;
+    color: #d33434;
+    cursor: pointer;
+    font-size: 0.9em;
+    padding: 4px 8px;
+}
+
+.delete-btn:hover {
+    background-color: #fce8e8;
+}
+
+.action-form {
+    margin: 0;
+}
+
+.empty-message {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    padding: 30px 0;
+}

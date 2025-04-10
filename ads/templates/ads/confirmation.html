@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if is_edit %} Изменение объявления {% else %} Создание объявления {% endif %}
+{% endblock title %}
+
+{% block content %}
+
+<div class="confirmation-container">
+    <h2> Объявление {% if is_edit %} изменено {% else %} создано {% endif %} успешно! </h2>
+    <p> Ваше объявление было {% if is_edit %} изменено {% else %} создано {% endif %} со следующими данными: </p>
+
+    <div class="ad-details">
+        <p><strong>Автор:</strong> {{ ad.user.username }}</p>
+        <p><strong>Заголовок:</strong> {{ ad.title }}</p>
+        <p><strong>Описание:</strong> {{ ad.description }}</p>
+        <p><strong>URL изображения:</strong> {% if ad.image_url %}{{ ad.image_url }} {% else %} Не указано {% endif %}</p>
+        <p><strong>Категория:</strong> {{ ad.category }}</p>
+        <p><strong>Состояние:</strong> {{ ad.condition }}</p>
+        <p><strong>Дата создания:</strong> {{ ad.created_at|date:"d.m.Y H:i" }}</p>
+    </div>
+
+    <a href="{% url 'ads_list' %}" class="btn btn-primary">Вернуться к списку</a>
+</div>
+{% endblock content %}

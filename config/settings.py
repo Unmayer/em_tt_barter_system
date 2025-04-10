@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 
@@ -7,7 +8,7 @@ SECRET_KEY = 'django-insecure-)h-8n-y5e%6eat=pxav1r0i%%lyorp(4kx)asr%3+$_5s1j#t7
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 INSTALLED_APPS = [
@@ -76,14 +77,17 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LANGUAGE_CODE = 'ru-ru'
+LANGUAGE_CODE = 'ru'
 
-TIME_ZONE = 'Moscow/Russia'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 
 USE_TZ = True
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'ads/static'),
+]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
