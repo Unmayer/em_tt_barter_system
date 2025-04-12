@@ -1,15 +1,41 @@
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
+from django.db.models import Q
 from django.http import HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.http import require_POST
 
 from ads.models import Ad
-from ads.forms import AdForm
+from ads.forms import AdForm, AdSearchForm
 
 
 def advertisement_list(request):
-    ads = Ad.objects.select_related('user')
-    return render(request, 'ads/ads_list.html', {'ads': ads})
+    ads = Ad.objects.select_related('user').order_by('-created_at')
+    form = AdSearchForm(request.GET or None)
+
+    if form.is_valid():
+        data = form.cleaned_data
+
+        if data['search']:
+            ads = ads.filter(
+                Q(title__icontains=data['search']) |
+                Q(description__icontains=data['search'])
+            )
+
+        if data['category']:
+            ads = ads.filter(category__iexact=data['category'])
+
+        if data['condition']:
+            ads = ads.filter(condition=data['condition'])
+
+    paginator = Paginator(ads, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'ads/ads_list.html', {
+        'page_obj': page_obj,
+        'form': form,
+    })
 
 
 @login_required

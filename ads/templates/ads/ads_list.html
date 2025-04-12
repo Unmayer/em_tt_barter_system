@@ -4,8 +4,14 @@
 
 {% block content %}
     <h1>Список объявлений</h1>
-    
-    {% for ad in ads %}
+
+    <form method="get" class="search-form">
+        {{ form.as_p }}
+        <button type="submit" class="search-button">Поиск</button>
+        <a href="?" class="reset-button">Сбросить</a>
+    </form>
+
+    {% for ad in page_obj %}
     <div class="ad">
         <div class="ad-header">{{ ad.title }}</div>
         <div class="ad-meta">
@@ -13,7 +19,7 @@
             <span class="meta-item">Дата: {{ ad.created_at|date:"d.m.Y" }}</span>
             <span class="meta-item">Состояние: {{ ad.get_condition_display }}</span>
             <span class="meta-item">Категория: {{ ad.category }}</span>
-            <span class="meta-item">URL Изображения:{% if ad.image_url %}{{ ad.image_url }}{% else %} не указан {% endif %}</span>
+             <span class="meta-item">URL Изображения:{% if ad.image_url %}{{ ad.image_url }}{% else %} не указан {% endif %}</span>
             <span class="meta-item">Описание: {{ ad.description }}</span>
         </div>
         <div class="ad-actions">
@@ -29,4 +35,26 @@
     {% empty %}
     <div class="empty-message">Нет объявлений</div>
     {% endfor %}
-{% endblock content %}
+
+    {% if page_obj.has_other_pages %}
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}
+                {% if request.GET.search %}&search={{ request.GET.search }}{% endif %}
+                {% if request.GET.category %}&category={{ request.GET.category }}{% endif %}
+                {% if request.GET.condition %}&condition={{ request.GET.condition }}{% endif %}">← Назад
+            </a>
+        {% endif %}
+
+        <span>Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}
+                {% if request.GET.search %}&search={{ request.GET.search }}{% endif %}
+                {% if request.GET.category %}&category={{ request.GET.category }}{% endif %}
+                {% if request.GET.condition %}&condition={{ request.GET.condition }}{% endif %}">Вперед →
+            </a>
+        {% endif %}
+    </div>
+    {% endif %}
+{% endblock %}

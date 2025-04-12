@@ -103,3 +103,56 @@ h1 {
     font-style: italic;
     padding: 30px 0;
 }
+
+/*  Фильтрация */
+.search-form {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f5f5f5;
+    border-radius: 5px;
+}
+
+.search-form p {
+    margin: 10px 0;
+}
+
+.search-form label {
+    display: inline-block;
+    width: 100px;
+}
+
+.search-button, .reset-button {
+    padding: 5px 15px;
+    margin-right: 10px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.search-button {
+    background: #4CAF50;
+    color: white;
+}
+
+.reset-button {
+    background: #f44336;
+    color: white;
+    text-decoration: none;
+}
+
+/*  Пагинация */
+.pagination {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.pagination a {
+    padding: 5px 10px;
+    margin: 0 5px;
+    border: 1px solid #ddd;
+    text-decoration: none;
+}
+
+.pagination a:hover {
+    background: #eee;
+}
