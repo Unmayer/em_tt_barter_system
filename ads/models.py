@@ -37,7 +37,7 @@ class Ad(CreatedDateMixin, models.Model):
         verbose_name_plural = "Объявления"
 
     def __str__(self):
-        return {self.title}
+        return self.title
 
 
 class ExchangeProposal(CreatedDateMixin, models.Model):
