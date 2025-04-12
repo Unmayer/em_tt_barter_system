@@ -9,9 +9,12 @@
     <div class="ad">
         <div class="ad-header">{{ ad.title }}</div>
         <div class="ad-meta">
-            <span class="meta-item">Автор: {{ ad.author.username }}</span>
+            <span class="meta-item">Автор: {{ ad.user.username }}</span>
             <span class="meta-item">Дата: {{ ad.created_at|date:"d.m.Y" }}</span>
             <span class="meta-item">Состояние: {{ ad.get_condition_display }}</span>
+            <span class="meta-item">Категория: {{ ad.category }}</span>
+            <span class="meta-item">URL Изображения:{% if ad.image_url %}{{ ad.image_url }}{% else %} не указан {% endif %}</span>
+            <span class="meta-item">Описание: {{ ad.description }}</span>
         </div>
         <div class="ad-actions">
             <a href="{% url 'edit_ad' ad.pk %}" class="action-link edit-link">Редактировать</a>

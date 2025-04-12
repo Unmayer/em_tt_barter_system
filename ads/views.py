@@ -1,6 +1,5 @@
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseForbidden
+from django.http import HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.http import require_POST
 
@@ -9,7 +8,7 @@ from ads.forms import AdForm
 
 
 def advertisement_list(request):
-    ads = Ad.objects.all()
+    ads = Ad.objects.select_related('user')
     return render(request, 'ads/ads_list.html', {'ads': ads})
 
 
@@ -50,7 +49,5 @@ def edit_advertisement(request, pk):
 @login_required()
 def delete_advertisement(request, pk):
     ad = get_object_or_404(Ad, pk=pk)
-    if request.method == 'POST':
-        ad.delete()
-        messages.success(request, "Заказ удалён")
-        return redirect('ads_list')
+    ad.delete()
+    return redirect('ads_list')
