@@ -1,12 +1,12 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.http import HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.http import require_POST
 
-from ads.models import Ad
-from ads.forms import AdForm, AdSearchForm
+from ads.models import Ad, ExchangeProposal
+from ads.forms import AdForm, AdSearchForm, ExchangeProposalForm, ExchangeProposalSearchForm
 
 
 def advertisement_list(request):
@@ -58,7 +58,8 @@ def edit_advertisement(request, pk):
     ad = get_object_or_404(Ad, pk=pk)
 
     if request.user != ad.user:
-        return HttpResponseForbidden()
+        messages.error(request, 'Вы не можете редактировать чужое объявление')
+        return redirect('ads_list')
 
     if request.method == 'POST':
         form = AdForm(request.POST, instance=ad)
@@ -77,3 +78,57 @@ def delete_advertisement(request, pk):
     ad = get_object_or_404(Ad, pk=pk)
     ad.delete()
     return redirect('ads_list')
+
+
+@login_required
+def create_exchange_proposal(request):
+    if request.method == 'POST':
+        form = ExchangeProposalForm(request.POST, user=request.user)
+        if form.is_valid():
+            proposal = form.save(commit=False)
+            proposal.save()
+            return redirect('proposals_list')
+    else:
+        form = ExchangeProposalForm(user=request.user)
+
+    return render(request, 'ads/create_proposal.html', {
+        'form': form,
+    })
+
+
+def proposal_list(request):
+    proposals = (
+        ExchangeProposal.objects.select_related('ad_sender', 'ad_receiver', 'ad_sender__user', 'ad_receiver__user')
+        .order_by('-created_at')
+    )
+    form = ExchangeProposalSearchForm(request.GET or None)
+    if form.is_valid():
+        data = form.cleaned_data
+        if data['ad_sender']:
+            proposals = proposals.filter(ad_sender__title__icontains=data['ad_sender'])
+        if data['ad_receiver']:
+            proposals = proposals.filter(ad_receiver__title__icontains=data['ad_receiver'])
+        if data['status']:
+            proposals = proposals.filter(status=data['status'])
+
+    return render(request, 'ads/proposals_list.html', {'proposals': proposals, 'form': form})
+
+
+@login_required
+def edit_proposal(request, proposal_id):
+    proposal = get_object_or_404(ExchangeProposal, id=proposal_id)
+
+    if request.method == 'POST':
+        new_status = request.POST.get('status')
+        if new_status in [ExchangeProposal.ACCEPTED, ExchangeProposal.REJECTED]:
+            proposal.status = new_status
+            proposal.save()
+            messages.success(request, 'Статус обновлён')
+            return redirect('proposals_list')
+        else:
+            messages.error(request, 'Некорректный статус')
+
+    return render(request, 'ads/edit_proposal.html', {
+        'proposal': proposal,
+        'status_choices': ExchangeProposal.STATUS_CHOICES[1:]
+    })

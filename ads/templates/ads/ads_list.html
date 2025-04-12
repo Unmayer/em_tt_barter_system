@@ -4,6 +4,7 @@
 
 {% block content %}
     <h1>Список объявлений</h1>
+    <h2><a href="{% url 'proposals_list' %}">Перейти к предложениям об обмене</a></h2>
 
     <form method="get" class="search-form">
         {{ form.as_p }}

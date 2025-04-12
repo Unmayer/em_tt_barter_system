@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Предложения об обмене{% endblock %}
+
+{% block content %}
+    <h2><a href="{% url 'ads_list' %}">Вернуться к объявлениям</a></h2>
+    <form method="get" class="search-form">
+        {{ form.as_p }}
+        <button type="submit" class="search-button">Поиск</button>
+        <a href="?" class="reset-button">Сбросить</a>
+    </form>
+{% for proposal in proposals %}
+    <div class="ad">
+        <div class="ad-header">{{ proposal }}</div>
+        <div class="ad-meta">
+            <span class="meta-item">Объявление-инициатор: {{ proposal.ad_sender }} (Пользователь: {{ proposal.ad_sender.user.username }})</span>
+            <span class="meta-item">Объявление-получатель: {{ proposal.ad_receiver }} (Пользователь: {{ proposal.ad_receiver.user.username }})</span>
+            <span class="meta-item">Комментарий: {{ proposal.comment }}</span>
+            <span class="meta-item">Статус: {{ proposal.get_status_display }}</span>
+        </div>
+        <div class="ad-actions">
+            <a href="{% url 'edit_proposal' proposal.id %}" class="action-link edit-link">Редактировать</a>
+        </div>
+    </div>
+    {% empty %}
+    <div class="empty-message">Нет предложений об обмене</div>
+    {% endfor %}
+{% endblock content %}

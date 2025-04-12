@@ -156,3 +156,26 @@ h1 {
 .pagination a:hover {
     background: #eee;
 }
+
+.messages {
+    margin: 10px 0;
+}
+
+.message {
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+}
+
+.error {
+    background: #ffebee;
+    border-color: #ef9a9a;
+    color: #c62828;
+}
+
+.success {
+    background: #e8f5e9;
+    border-color: #a5d6a7;
+    color: #2e7d32;
+}
