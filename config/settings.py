@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     # 3-d party
     'rest_framework',
     'debug_toolbar',
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -96,3 +97,7 @@ STATICFILES_DIRS = [
 ]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}

@@ -4,7 +4,8 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.http import require_POST
-from rest_framework import generics, permissions
+from drf_spectacular.utils import extend_schema
+from rest_framework import generics, permissions, status
 from rest_framework.exceptions import PermissionDenied
 
 from ads.models import Ad, ExchangeProposal
@@ -137,6 +138,15 @@ def edit_proposal(request, proposal_id):
     })
 
 
+@extend_schema(
+    description="Просмотр объявлений. Создание нового объявления",
+    request=AdSerializer,
+    methods=['GET', 'POST'],
+    responses={
+        status.HTTP_201_CREATED: AdSerializer,
+        status.HTTP_200_OK: AdSerializer(many=True),
+    },
+)
 class AdListCreateAPIView(generics.ListCreateAPIView):
     queryset = Ad.objects.select_related('user').order_by('-created_at')
     serializer_class = AdSerializer
@@ -146,6 +156,15 @@ class AdListCreateAPIView(generics.ListCreateAPIView):
         serializer.save(user=self.request.user)
 
 
+@extend_schema(
+    description="Просмотр предложений об обменах. Создание нового предложения обмена. ",
+    request=ProposalSerializer,
+    methods=['GET', 'POST'],
+    responses={
+        status.HTTP_201_CREATED: ProposalSerializer,
+        status.HTTP_200_OK: ProposalSerializer(many=True),
+    },
+)
 class ProposalListCreateAPIView(generics.ListCreateAPIView):
     queryset = (
         ExchangeProposal.objects.select_related('ad_sender', 'ad_receiver', 'ad_sender__user', 'ad_receiver__user')
@@ -158,6 +177,18 @@ class ProposalListCreateAPIView(generics.ListCreateAPIView):
         serializer.save(status=ExchangeProposal.AWAITING)
 
 
+@extend_schema(
+    description='Управление объявлениями',
+    methods=['PATCH', 'GET', 'PUT', 'DELETE'],
+    request=AdSerializer,
+    responses={
+        status.HTTP_200_OK: AdSerializer,
+        status.HTTP_404_NOT_FOUND: {'description': 'Объект не найден'},
+        status.HTTP_204_NO_CONTENT: None,
+        status.HTTP_403_FORBIDDEN: {'description': 'Редактирование объявления доступно только автору'},
+
+    }
+)
 class AdDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Ad.objects.select_related('user')
     serializer_class = AdSerializer
@@ -172,6 +203,17 @@ class AdDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
         instance.delete()
 
 
+@extend_schema(
+    description='Управление предложениями обмена',
+    methods=['PATCH', 'GET', 'PUT', 'DELETE'],
+    request=ProposalSerializer,
+    responses={
+        status.HTTP_200_OK: ProposalSerializer,
+        status.HTTP_404_NOT_FOUND: {'description': 'Объект не найден'},
+        status.HTTP_204_NO_CONTENT: None,
+
+    }
+)
 class ProposalDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = (
         ExchangeProposal.objects.select_related('ad_sender', 'ad_receiver', 'ad_sender__user', 'ad_receiver__user')

@@ -1,7 +1,37 @@
+from drf_spectacular.utils import extend_schema_serializer, OpenApiExample
 from rest_framework import serializers
 from ads.models import Ad, ExchangeProposal
 
 
+@extend_schema_serializer(
+    examples=[
+        OpenApiExample(
+            'Пример создания объявления',
+            value={
+                'title': 'Название товара',
+                'description': 'Описание товара',
+                'category': 'electronics',
+                'condition': 'new',
+                'image_url': 'https://example.com/image.jpg'
+            },
+            request_only=True
+        ),
+        OpenApiExample(
+            'Пример ответа',
+            value={
+                'id': 1,
+                'title': 'Название товара',
+                'description': 'Описание товара',
+                'category': 'electronics',
+                'condition': 'new',
+                'image_url': 'https://example.com/image.jpg',
+                'created_at': '2025-05-20T12:00:00Z',
+                'user': 'username'
+            },
+            response_only=True
+        )
+    ]
+)
 class AdSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
     condition_display = serializers.CharField(source='get_condition_display', read_only=True)
@@ -24,6 +54,32 @@ class AdSerializer(serializers.ModelSerializer):
         }
 
 
+@extend_schema_serializer(
+    examples=[
+        OpenApiExample(
+            'Пример создания предложения',
+            value={
+                'ad_sender_id': 1,
+                'ad_receiver_id': 2,
+                'comment': 'Предлагаю обмен',
+                'status': 'awaiting'
+            },
+            request_only=True
+        ),
+        OpenApiExample(
+            'Пример ответа',
+            value={
+                'id': 1,
+                'ad_sender': {'id': 1, 'title': 'Мой товар'},
+                'ad_receiver': {'id': 2, 'title': 'Чужой товар'},
+                'comment': 'Предлагаю обмен',
+                'status': 'awaiting',
+                'created_at': '2025-05-20T12:00:00Z'
+            },
+            response_only=True
+        )
+    ]
+)
 class ProposalSerializer(serializers.ModelSerializer):
     ad_sender = AdSerializer(read_only=True)
     ad_receiver = AdSerializer(read_only=True)

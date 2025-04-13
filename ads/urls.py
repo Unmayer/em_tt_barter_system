@@ -12,6 +12,7 @@ from ads.views import (
     AdDetailAPIView,
     ProposalDetailAPIView,
 )
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 urlpatterns = [
     path('ads/<int:pk>/edit/', edit_advertisement, name='edit_ad'),
@@ -28,4 +29,7 @@ urlpatterns = [
 
     path('api/proposals/<int:pk>/', ProposalDetailAPIView.as_view(), name='proposal-detail'),
     path('api/proposals/', ProposalListCreateAPIView.as_view(), name='api-proposals'),
+
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema')),
 ]
