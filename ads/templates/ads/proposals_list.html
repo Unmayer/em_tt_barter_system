@@ -2,7 +2,9 @@
 {% block title %}Предложения об обмене{% endblock %}
 
 {% block content %}
+    <h1>Предложения об обмене</h1>
     <h2><a href="{% url 'ads_list' %}">Вернуться к объявлениям</a></h2>
+    <h4><a href="{% url 'create_proposal' %}">Создать предложение об обмене</a></h4>
     <form method="get" class="search-form">
         {{ form.as_p }}
         <button type="submit" class="search-button">Поиск</button>

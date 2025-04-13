@@ -4,9 +4,12 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.http import require_POST
+from rest_framework import generics, permissions
+from rest_framework.exceptions import PermissionDenied
 
 from ads.models import Ad, ExchangeProposal
 from ads.forms import AdForm, AdSearchForm, ExchangeProposalForm, ExchangeProposalSearchForm
+from ads.serializers import AdSerializer, ProposalSerializer
 
 
 def advertisement_list(request):
@@ -132,3 +135,47 @@ def edit_proposal(request, proposal_id):
         'proposal': proposal,
         'status_choices': ExchangeProposal.STATUS_CHOICES[1:]
     })
+
+
+class AdListCreateAPIView(generics.ListCreateAPIView):
+    queryset = Ad.objects.select_related('user').order_by('-created_at')
+    serializer_class = AdSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class ProposalListCreateAPIView(generics.ListCreateAPIView):
+    queryset = (
+        ExchangeProposal.objects.select_related('ad_sender', 'ad_receiver', 'ad_sender__user', 'ad_receiver__user')
+        .order_by('-created_at')
+    )
+    serializer_class = ProposalSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def perform_create(self, serializer):
+        serializer.save(status=ExchangeProposal.AWAITING)
+
+
+class AdDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Ad.objects.select_related('user')
+    serializer_class = AdSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def perform_update(self, serializer):
+        if serializer.instance.user != self.request.user:
+            raise PermissionDenied("У вас нет прав на редактирование этого объявления")
+        serializer.save()
+
+    def perform_destroy(self, instance):
+        instance.delete()
+
+
+class ProposalDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = (
+        ExchangeProposal.objects.select_related('ad_sender', 'ad_receiver', 'ad_sender__user', 'ad_receiver__user')
+        .order_by('-created_at')
+    )
+    serializer_class = ProposalSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
