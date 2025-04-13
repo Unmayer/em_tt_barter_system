@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import AnonymousUser
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404, redirect
@@ -57,9 +58,12 @@ def create_advertisement(request):
     return render(request, 'ads/create_ad.html', {'form': form})
 
 
-@login_required
 def edit_advertisement(request, pk):
     ad = get_object_or_404(Ad, pk=pk)
+
+    if isinstance(request.user, AnonymousUser):
+        messages.error(request, 'Авторизуйтесь чтобы редактировать объявления')
+        return redirect('ads_list')
 
     if request.user != ad.user:
         messages.error(request, 'Вы не можете редактировать чужое объявление')
